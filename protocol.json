@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "frozen_at": "2026-09-22",
+  "paper": {
+    "arxiv_id": "2506.16659v3",
+    "upstream_commit": "94712d907f6cc94528b04dffb632215b5ed20a0d",
+    "reported_ppl_no_momentum": 39.89,
+    "reported_ppl_head_momentum": 30.81
+  },
+  "inputs": {
+    "dataset": "allenai/c4",
+    "dataset_config": "en",
+    "dataset_revision": "1588ec454efa1a09f29cd18ddd04fe05fc8653a2",
+    "tokenizer": "google-t5/t5-base",
+    "tokenizer_revision": "a9723ea7f1b39c1eae772870f3b547bf6ef7e6c1",
+    "shuffle_seed": 42
+  },
+  "model": {
+    "vocab_size": 32000,
+    "hidden_size": 512,
+    "intermediate_size": 1376,
+    "num_hidden_layers": 8,
+    "num_attention_heads": 8,
+    "max_position_embeddings": 1024,
+    "rms_norm_eps": 1e-6,
+    "initializer_range": 0.02,
+    "tie_word_embeddings": false
+  },
+  "training": {
+    "seed": 42,
+    "sequence_length": 256,
+    "global_batch_size": 512,
+    "micro_batch_size": 64,
+    "gradient_accumulation": 8,
+    "updates": 11000,
+    "nominal_tokens": 1441792000,
+    "dtype": "bfloat16",
+    "learning_rate": 0.001,
+    "weight_decay": 0.0,
+    "scheduler": "cosine",
+    "warmup_updates": 1100,
+    "eval_every_updates": 1000,
+    "eval_tokens": 10000000
+  },
+  "arms": {
+    "no_momentum": {"head_momentum": 0.0},
+    "head_momentum": {"head_momentum": 0.9}
+  },
+  "canary": {
+    "updates": 500,
+    "max_wall_hours": 2.0,
+    "max_spend_inr": 80.0,
+    "max_projected_full_hours": 20.0,
+    "minimum_aggregate_training_tokens_per_second": 40056
+  },
+  "outcome": {
+    "primary": "final_ppl_no_momentum_minus_head_momentum",
+    "strong_reproduction_min_delta": 4.54,
+    "null_max_absolute_delta": 1.0,
+    "final_evaluations_for_direction": 4,
+    "minimum_better_final_evaluations": 3
+  },
+  "budget": {
+    "hard_cap_inr": 950.0,
+    "a30_on_demand_inr_per_hour_snapshot": 38.88,
+    "full_projection_cap_inr": 777.60
+  }
+}
