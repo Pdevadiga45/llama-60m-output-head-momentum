@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools==75.3.0", "wheel==0.44.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "scale-momentum-reproduction"
+version = "0.1.0"
+description = "Independent reproduction of SCALE last-layer momentum"
+requires-python = ">=3.10,<3.12"
+dependencies = [
+  "datasets==2.21.0",
+  "numpy==1.26.4",
+  "sentencepiece==0.2.0",
+  "torch==2.4.0",
+  "transformers==4.31.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest==8.3.3"]
+
+[project.scripts]
+scale-repro = "scale_repro.train:main"
+
+[tool.setuptools.packages.find]
+include = ["scale_repro*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
