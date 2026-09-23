@@ -8,6 +8,10 @@ This repository does not copy the unlicensed upstream implementation. It impleme
 
 See `PROTOCOL.md` and `protocol.json` for the frozen estimand, budget gate, and stop conditions. See `RUNBOOK.md` for the supervised CLI-only Jarvis procedure.
 
+## Result
+
+The reproduction found **39.95 PPL without momentum** and **32.34 PPL with momentum only on `lm_head.weight`**, a **7.60-point improvement** classified by the frozen protocol as a strong reproduction. See `RESULTS.md` for the learning curve, paired evidence, limitations, and cost.
+
 ## Local verification
 
 ```bash
