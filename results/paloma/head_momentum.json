@@ -1,0 +1,134 @@
+{
+  "arm": "head_momentum",
+  "benchmark": "Paloma-mini@256",
+  "checkpoint_sha256": "fc021613ff44b5d5f9dd1c5d984980842d22d93d558eac433bdbcdb80426d91b",
+  "checkpoint_summary_sha256": "8b43d4f9cad47042670ca4e0d3dfb5a41d05040777a26b0ecbe9c14197ae44e4",
+  "data_manifest_sha256": "1d90c52a307e333220a4f3f29537bfb1a08a2acf8bfc1543f7b0deb0d8386f81",
+  "device_type": "cuda",
+  "domains": [
+    {
+      "bytes": 191114,
+      "data_sha256": "d691ef16c2e18064bda8bd6c65554170905d129b923dedb19e5f8c8f215fe181",
+      "documents": 99,
+      "group": "c4_control",
+      "name": "New York Times",
+      "path": "c4_100_domains/test/test_1_www.nytimes.com.jsonl.gz",
+      "sum_logprob": -426074.06102752686,
+      "tokens": 109661
+    },
+    {
+      "bytes": 164253,
+      "data_sha256": "9db83b47e41a6e1cc9565962f5c6f196255228712849d8b8cf8457a8d86eb45f",
+      "documents": 57,
+      "group": "c4_control",
+      "name": "English Wikipedia",
+      "path": "c4_100_domains/test/test_2_en.wikipedia.org.jsonl.gz",
+      "sum_logprob": -410980.9754180908,
+      "tokens": 108949
+    },
+    {
+      "bytes": 124553,
+      "data_sha256": "d09c19cadfb8ac82a5aa6bf933c81d23304d68ecfc9df3f3529a13c4cd4a32ba",
+      "documents": 15,
+      "group": "c4_control",
+      "name": "Google Patents",
+      "path": "c4_100_domains/test/test_7_patents.google.com.jsonl.gz",
+      "sum_logprob": -408122.35510253906,
+      "tokens": 114135
+    },
+    {
+      "bytes": 152764,
+      "data_sha256": "d9eae611170ddda77bbccc81cfc961141c20ff601d44f6346d59c851cf8296a9",
+      "documents": 117,
+      "group": "c4_control",
+      "name": "NCBI",
+      "path": "c4_100_domains/test/test_16_www.ncbi.nlm.nih.gov.jsonl.gz",
+      "sum_logprob": -433915.08032131195,
+      "tokens": 113945
+    },
+    {
+      "bytes": 197268,
+      "data_sha256": "383035009f99ff671cc4f2c3eb5d647cfd640244f8d8867373c2879b5c5bbaa3",
+      "documents": 492,
+      "group": "ood_reddit",
+      "name": "r/AskReddit",
+      "path": "dolma_100_subreddits/test/test_00_AskReddit.jsonl.gz",
+      "sum_logprob": -406232.9568424225,
+      "tokens": 106479
+    },
+    {
+      "bytes": 201566,
+      "data_sha256": "72202983d75bde993e0dc6c44f1ab65e870564ad437394880624202f785506a4",
+      "documents": 492,
+      "group": "ood_reddit",
+      "name": "r/politics",
+      "path": "dolma_100_subreddits/test/test_01_politics.jsonl.gz",
+      "sum_logprob": -420580.15193748474,
+      "tokens": 107030
+    },
+    {
+      "bytes": 189398,
+      "data_sha256": "54dad6eae220b5d9030bfe6f5bb0db3642da15e84681e0f3de5cf71a87965078",
+      "documents": 459,
+      "group": "ood_reddit",
+      "name": "r/personalfinance",
+      "path": "dolma_100_subreddits/test/test_10_personalfinance.jsonl.gz",
+      "sum_logprob": -392857.7169532776,
+      "tokens": 103730
+    },
+    {
+      "bytes": 186874,
+      "data_sha256": "c34c7ebad703d37050560d98fe74bc82334475f05a250aaaf39adb84716bd6c5",
+      "documents": 465,
+      "group": "ood_reddit",
+      "name": "r/depression",
+      "path": "dolma_100_subreddits/test/test_66_depression.jsonl.gz",
+      "sum_logprob": -383681.2992372513,
+      "tokens": 106067
+    },
+    {
+      "bytes": 101936,
+      "data_sha256": "733e248984e8a0b447b6228f127a3716bae1d722780e434cde50b56b53d9a6d5",
+      "documents": 92,
+      "group": "ood_code",
+      "name": "C",
+      "path": "dolma_100_programing_languages/test/test_02_c.jsonl.gz",
+      "sum_logprob": -400797.7239341736,
+      "tokens": 118836
+    },
+    {
+      "bytes": 97481,
+      "data_sha256": "d104ec19dbc08d643de9317f96b09e79f91d28fc2977785744d4f0d1efb183ff",
+      "documents": 54,
+      "group": "ood_code",
+      "name": "Python",
+      "path": "dolma_100_programing_languages/test/test_06_python.jsonl.gz",
+      "sum_logprob": -440876.39451885223,
+      "tokens": 115662
+    },
+    {
+      "bytes": 124601,
+      "data_sha256": "549cb45cea23f857b23c2eab4fc25af0ddab1ab06aca0a48c87eff740e90919e",
+      "documents": 68,
+      "group": "ood_code",
+      "name": "JavaScript",
+      "path": "dolma_100_programing_languages/test/test_07_javascript.jsonl.gz",
+      "sum_logprob": -418338.64417266846,
+      "tokens": 119084
+    },
+    {
+      "bytes": 94455,
+      "data_sha256": "f8c174cde496853b8320c90ee60e0a90557989981f435bdcdc05f4bcd0731c0f",
+      "documents": 72,
+      "group": "ood_code",
+      "name": "Rust",
+      "path": "dolma_100_programing_languages/test/test_16_rust.jsonl.gz",
+      "sum_logprob": -434539.04034614563,
+      "tokens": 116697
+    }
+  ],
+  "dtype": "bfloat16",
+  "extension_code_sha256": "cfdb907cfaeee8aca52f1588ead0b03f1e23233a77900f3e5f1ffeddeac9503f",
+  "extension_protocol_sha256": "b655a96966b46e8f7df4a7d9a217fd7efceaf1dcc8a9f6af5119d2fef51342f4",
+  "status": "complete"
+}

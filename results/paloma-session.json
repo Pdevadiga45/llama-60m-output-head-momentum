@@ -1,0 +1,31 @@
+{
+  "status": "complete",
+  "date": "2026-09-24",
+  "extension": "paired_paloma_evaluation",
+  "evaluator_commit_sha": "8205a7a8977fa4e2393e8439f499aaf47f734cf5",
+  "evaluator_code_sha256": "cfdb907cfaeee8aca52f1588ead0b03f1e23233a77900f3e5f1ffeddeac9503f",
+  "extension_protocol_sha256": "b655a96966b46e8f7df4a7d9a217fd7efceaf1dcc8a9f6af5119d2fef51342f4",
+  "wheel_sha256": "f0c1e8d45a83dcbd0c867060af3a452d6c124633260c3bb061dacd3e96be8018",
+  "provider": "jarvislabs",
+  "gpu": "NVIDIA A30",
+  "device_type": "cuda",
+  "dtype": "bfloat16",
+  "environment": {
+    "python": "3.10.20",
+    "torch": "2.4.0+cu121",
+    "transformers": "4.31.0",
+    "numpy": "1.26.4",
+    "sentencepiece": "0.2.0"
+  },
+  "provider_runtime_reported": "0 hours 14 minutes",
+  "provider_spend_inr": 10.54,
+  "artifact_verification": {
+    "exact_remote_runtime_verification": true,
+    "local_hash_and_semantic_verification": true,
+    "cross_python_note": "Python 3.11 recomputation differed from Python 3.10 in one derived perplexity by 7.1e-15; raw scores, hashes, and all other fields matched. Local semantic verification used 1e-14 float tolerance."
+  },
+  "cleanup": {
+    "instance_destroyed": true,
+    "final_instance_inventory_empty": true
+  }
+}

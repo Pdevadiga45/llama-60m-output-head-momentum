@@ -48,6 +48,31 @@ The momentum arm is better at all 11 scheduled evaluations. Both curves improve 
 - The total includes roughly ₹146 of avoidable idle time after a monitor disconnect delayed the second arm.
 - Final artifacts were downloaded and verified before destruction; the Jarvis inventory was verified empty.
 
+## Cross-domain extension: Paloma-mini
+
+The two frozen checkpoints were evaluated without retraining on 12 complete files from Paloma revision `65cd6fc59dba021b21db414fa5e8d7765ffbe5e6`: four C4 control domains, four Reddit domains, and four programming-language domains. Evaluation used the pinned T5 tokenizer, the `lm-evaluation-harness` disjoint rolling-window policy at sequence length 256, CUDA BF16, and FP32 log-softmax/reduction.
+
+| Domain group | Domains | No-momentum geometric-mean PPL | Head-momentum geometric-mean PPL | Delta nats/token |
+|---|---:|---:|---:|---:|
+| C4 controls | 4 | 53.63 | 42.96 | -0.2218 |
+| Reddit | 4 | 49.73 | 44.14 | -0.1192 |
+| Code | 4 | 43.56 | 36.79 | -0.1689 |
+| Reddit + code headline set | 8 | 46.54 | 40.30 | -0.1441 |
+
+The head-momentum checkpoint achieved lower cross-entropy on **all 12 domains**. On the eight-domain Reddit/code headline set, geometric-mean perplexity fell from **46.54 to 40.30**, a **6.24-point / 13.4% reduction**. The effect was present in both OOD groups and was larger on the four C4 controls.
+
+This is evidence of **paired cross-domain fit**, not uncontaminated generalization: overlap between pretraining C4 and Paloma sources cannot be ruled out, and this is still one paired training seed. The result strengthens the conclusion that output-head momentum produced a broadly better checkpoint rather than improving only the original C4 validation stream.
+
+Extension evidence:
+
+- Evaluator commit: `8205a7a8977fa4e2393e8439f499aaf47f734cf5`.
+- Packaged runtime evaluator hash: `cfdb907cfaeee8aca52f1588ead0b03f1e23233a77900f3e5f1ffeddeac9503f` (computed from the wheel's CRLF-normalized package files; it is intentionally distinct from hashing the repository's LF Git blobs).
+- Extension protocol hash: `b655a96966b46e8f7df4a7d9a217fd7efceaf1dcc8a9f6af5119d2fef51342f4`.
+- Machine-readable bundle: `results/paloma/`.
+- Provider runtime, spend, verification, and cleanup metadata: `results/paloma-session.json` (kept outside the bundle's exact-inventory contract).
+- Additional provider spend: **₹10.54**, bringing total project spend to **₹727.68**; final Jarvis inventory was verified empty.
+- The proposed coordinate-clipping arm was not run. Independent review showed that its audit and authorization machinery outweighed its incremental scientific value; no paid clipping compute was used.
+
 ## Interpretation and limits
 
 This reproduces the **component effect**: under the frozen recipe, adding momentum only to the language-model head materially improves validation perplexity. It does not establish the paper's proposed gradient-variance explanation as the causal mechanism.

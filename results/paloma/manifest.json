@@ -1,0 +1,30 @@
+{
+  "artifacts": {
+    "comparison.json": {
+      "bytes": 8520,
+      "sha256": "90f677687f3bc8ba203064a5693d018d91a2fabcaf31d4ab1683d58ceb2f5373"
+    },
+    "data_manifest.json": {
+      "bytes": 2512,
+      "sha256": "602d45ab6f9a309249ad95d0473ecc998943373ee65e2551de78b593a8e8f632"
+    },
+    "head_momentum.json": {
+      "bytes": 4739,
+      "sha256": "7c1bdcb753fb525ebfa7352a61b6e7b79a9fad7cb214be90b78618b17ebb1857"
+    },
+    "no_momentum.json": {
+      "bytes": 4731,
+      "sha256": "f21c1821d834bc8ce3c6a082dfde19b4127557fcf3b5ca88049006aeb80eab29"
+    }
+  },
+  "data_manifest_sha256": "1d90c52a307e333220a4f3f29537bfb1a08a2acf8bfc1543f7b0deb0d8386f81",
+  "device_type": "cuda",
+  "dtype": "bfloat16",
+  "extension_code_sha256": "cfdb907cfaeee8aca52f1588ead0b03f1e23233a77900f3e5f1ffeddeac9503f",
+  "extension_protocol_sha256": "b655a96966b46e8f7df4a7d9a217fd7efceaf1dcc8a9f6af5119d2fef51342f4",
+  "head_momentum_checkpoint": "fc021613ff44b5d5f9dd1c5d984980842d22d93d558eac433bdbcdb80426d91b",
+  "head_momentum_checkpoint_summary": "8b43d4f9cad47042670ca4e0d3dfb5a41d05040777a26b0ecbe9c14197ae44e4",
+  "no_momentum_checkpoint": "80f7954a298cd4392bfa70b0508728c128aa971bd4a11d50df3708b73da83619",
+  "no_momentum_checkpoint_summary": "ecbc5f438d7cfc8b5d0cfb34b952f9076646d9d08d123c5e075b36b5355d87f6",
+  "status": "complete"
+}
