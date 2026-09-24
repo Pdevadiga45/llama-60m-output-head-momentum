@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "frozen_at": "2026-09-24",
+  "base": {
+    "published_commit_sha": "142669ab2cecf8a52389929fa925809773987f74",
+    "training_commit_sha": "b223e43795efb2f8f4a034bad27fe0f904e6a5fa",
+    "source_protocol_canonical_sha256": "e78fac9163b98927f2f4326ec23a9f6f91ecbbf95f4b762fb5932dd2c33891ad",
+    "artifact_protocol_sha256": "6fe17a40d705bfd03834f7d4ec05bda56a6ad9402b8826f88cada184f65bcabd",
+    "initial_state_sha256": "566cfd28890c0f3b6689001035b31e60066890c89ae1aa10ea454d1d90ebd45a",
+    "no_momentum_state_sha256": "80f7954a298cd4392bfa70b0508728c128aa971bd4a11d50df3708b73da83619",
+    "head_momentum_state_sha256": "fc021613ff44b5d5f9dd1c5d984980842d22d93d558eac433bdbcdb80426d91b",
+    "no_momentum_summary_sha256": "ecbc5f438d7cfc8b5d0cfb34b952f9076646d9d08d123c5e075b36b5355d87f6",
+    "head_momentum_summary_sha256": "8b43d4f9cad47042670ca4e0d3dfb5a41d05040777a26b0ecbe9c14197ae44e4"
+  },
+  "paloma": {
+    "name": "Paloma-mini@256",
+    "dataset": "allenai/paloma",
+    "dataset_revision": "65cd6fc59dba021b21db414fa5e8d7765ffbe5e6",
+    "split": "test",
+    "model_max_seq_len": 256,
+    "window_policy": "lm_eval_rolling_disjoint",
+    "window_reference": {
+      "repository": "EleutherAI/lm-evaluation-harness",
+      "revision": "d6de81643928d653435c431bae19945d41d32520",
+      "context_len": 1
+    },
+    "evaluation": {
+      "device_type": "cuda",
+      "dtype": "bfloat16"
+    },
+    "batch_size": 16,
+    "tokenizer": "google-t5/t5-base",
+    "tokenizer_revision": "a9723ea7f1b39c1eae772870f3b547bf6ef7e6c1",
+    "add_special_tokens": false,
+    "document_prefix": "eos_token_id",
+    "sample_policy": "complete_files",
+    "aggregation": "macro_mean_cross_entropy",
+    "framing": "paired_cross_domain_fit",
+    "domains": [
+      {"group": "c4_control", "name": "New York Times", "path": "c4_100_domains/test/test_1_www.nytimes.com.jsonl.gz", "bytes": 191114, "sha256": "d691ef16c2e18064bda8bd6c65554170905d129b923dedb19e5f8c8f215fe181"},
+      {"group": "c4_control", "name": "English Wikipedia", "path": "c4_100_domains/test/test_2_en.wikipedia.org.jsonl.gz", "bytes": 164253, "sha256": "9db83b47e41a6e1cc9565962f5c6f196255228712849d8b8cf8457a8d86eb45f"},
+      {"group": "c4_control", "name": "Google Patents", "path": "c4_100_domains/test/test_7_patents.google.com.jsonl.gz", "bytes": 124553, "sha256": "d09c19cadfb8ac82a5aa6bf933c81d23304d68ecfc9df3f3529a13c4cd4a32ba"},
+      {"group": "c4_control", "name": "NCBI", "path": "c4_100_domains/test/test_16_www.ncbi.nlm.nih.gov.jsonl.gz", "bytes": 152764, "sha256": "d9eae611170ddda77bbccc81cfc961141c20ff601d44f6346d59c851cf8296a9"},
+      {"group": "ood_reddit", "name": "r/AskReddit", "path": "dolma_100_subreddits/test/test_00_AskReddit.jsonl.gz", "bytes": 197268, "sha256": "383035009f99ff671cc4f2c3eb5d647cfd640244f8d8867373c2879b5c5bbaa3"},
+      {"group": "ood_reddit", "name": "r/politics", "path": "dolma_100_subreddits/test/test_01_politics.jsonl.gz", "bytes": 201566, "sha256": "72202983d75bde993e0dc6c44f1ab65e870564ad437394880624202f785506a4"},
+      {"group": "ood_reddit", "name": "r/personalfinance", "path": "dolma_100_subreddits/test/test_10_personalfinance.jsonl.gz", "bytes": 189398, "sha256": "54dad6eae220b5d9030bfe6f5bb0db3642da15e84681e0f3de5cf71a87965078"},
+      {"group": "ood_reddit", "name": "r/depression", "path": "dolma_100_subreddits/test/test_66_depression.jsonl.gz", "bytes": 186874, "sha256": "c34c7ebad703d37050560d98fe74bc82334475f05a250aaaf39adb84716bd6c5"},
+      {"group": "ood_code", "name": "C", "path": "dolma_100_programing_languages/test/test_02_c.jsonl.gz", "bytes": 101936, "sha256": "733e248984e8a0b447b6228f127a3716bae1d722780e434cde50b56b53d9a6d5"},
+      {"group": "ood_code", "name": "Python", "path": "dolma_100_programing_languages/test/test_06_python.jsonl.gz", "bytes": 97481, "sha256": "d104ec19dbc08d643de9317f96b09e79f91d28fc2977785744d4f0d1efb183ff"},
+      {"group": "ood_code", "name": "JavaScript", "path": "dolma_100_programing_languages/test/test_07_javascript.jsonl.gz", "bytes": 124601, "sha256": "549cb45cea23f857b23c2eab4fc25af0ddab1ab06aca0a48c87eff740e90919e"},
+      {"group": "ood_code", "name": "Rust", "path": "dolma_100_programing_languages/test/test_16_rust.jsonl.gz", "bytes": 94455, "sha256": "f8c174cde496853b8320c90ee60e0a90557989981f435bdcdc05f4bcd0731c0f"}
+    ]
+  }
+}

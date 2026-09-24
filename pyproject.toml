@@ -20,9 +20,13 @@ dev = ["pytest==8.3.3"]
 
 [project.scripts]
 scale-repro = "scale_repro.train:main"
+scale-paloma = "scale_repro.paloma:main"
 
 [tool.setuptools.packages.find]
 include = ["scale_repro*"]
+
+[tool.setuptools.package-data]
+scale_repro = ["*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
