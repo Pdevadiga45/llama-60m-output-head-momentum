@@ -1,18 +1,16 @@
-# SCALE last-layer momentum reproduction
+# Output-head momentum in LLaMA-60M pretraining
 
-Independent reproduction of the 60M-parameter last-layer-momentum ablation from **A Minimalist Optimizer Design for LLM Pretraining** (arXiv `2506.16659v3`).
+We implemented a column-normalized optimizer for LLaMA-60M and tested whether adding momentum to its output head improves pretraining. Two runs shared the same initialization, C4 data order, and training schedule; only output-head momentum changed.
 
-The study asks one question: with the paper's model, data budget, schedule, and column-normalized updates fixed, does momentum restricted to the language-model head reproduce the reported large perplexity improvement?
-
-This repository does not copy the unlicensed upstream implementation. It implements the paper-described optimizer independently using PyTorch and standard Hugging Face components.
+The method follows *Memory-Efficient LLM Pretraining via Minimalist Optimizer Design* (arXiv `2506.16659v3`). The implementation uses PyTorch and standard Hugging Face components.
 
 See `PROTOCOL.md` and `protocol.json` for the frozen estimand, budget gate, and stop conditions. See `RUNBOOK.md` for the supervised CLI-only Jarvis procedure.
 
 ## Result
 
-The reproduction found **39.95 PPL without momentum** and **32.34 PPL with momentum only on `lm_head.weight`**, a **7.60-point improvement** classified by the frozen protocol as a strong reproduction. See `RESULTS.md` for the learning curve, paired evidence, limitations, and cost.
+The paired runs found **39.95 PPL without output-head momentum** and **32.34 PPL with it**, a **7.60-point improvement**. See `RESULTS.md` for the learning curve, paired evidence, limitations, and cost.
 
-The checkpoint-only Paloma extension also favored head momentum on **all 12 evaluated domains**. Across the eight Reddit/code headline domains, geometric-mean perplexity improved from **46.54 to 40.30**. This is reported as paired cross-domain fit—not uncontaminated generalization. The complete result bundle is under `results/paloma/`.
+The same checkpoints were evaluated on **12 selected Paloma domains**, with head momentum lowering loss on all 12. Across the eight Reddit/code domains, geometric-mean perplexity improved from **46.54 to 40.30**. The machine-readable results are in `results/paloma/`.
 
 ## Local verification
 
