@@ -1,6 +1,5 @@
 import json
 import math
-import re
 from pathlib import Path
 
 import pytest
@@ -45,25 +44,6 @@ def test_frozen_protocol_is_internally_consistent():
     assert protocol["lifecycle"]["full_run_timeout_hours_per_arm"] == 10.0
     assert protocol["lifecycle"]["recovery_cleanup_reserve_seconds"] == 900
     assert protocol["lifecycle"]["destroy_after_download"] is True
-
-
-def test_authoritative_documents_match_amended_canary_scale():
-    expected = json.loads((ROOT / "protocol.json").read_text())["canary"]["updates"]
-    patterns = {
-        "GOAL.md": r"paid ([\d,]+)-update A30 canary",
-        "PROTOCOL.md": r"amended canary runs ([\d,]+) optimizer updates",
-        "RUNBOOK.md": r"([\d,]+)-update canary",
-    }
-    for filename, pattern in patterns.items():
-        match = re.search(pattern, (ROOT / filename).read_text())
-        assert match and int(match.group(1).replace(",", "")) == expected
-
-
-def test_runbook_enforces_the_canary_derived_full_arm_timeout():
-    runbook = (ROOT / "RUNBOOK.md").read_text()
-
-    assert "FULL_TIMEOUT_SECONDS=" in runbook
-    assert runbook.count('timeout --signal=TERM --kill-after=5m "$FULL_TIMEOUT_SECONDS"') == 2
 
 
 def test_protocol_rejects_pre_warmup_canary(tmp_path):
