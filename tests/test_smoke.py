@@ -30,6 +30,9 @@ from scale_repro.train import (
 )
 
 
+PROTOCOL_PATH = Path(train_module.__file__).with_name("protocol.json")
+
+
 def _write_canary_artifacts(path: Path, protocol_path: Path) -> dict:
     protocol = json.loads(protocol_path.read_text())
     updates = protocol["canary"]["updates"]
@@ -128,6 +131,23 @@ def test_code_hash_only_depends_on_installed_package_files(monkeypatch, tmp_path
 
     assert len(train_module._code_sha256()) == 64
 
+def test_default_protocol_works_outside_checkout(monkeypatch, tmp_path: Path):
+    protocol_path = PROTOCOL_PATH
+    run_dir = tmp_path / "canary"
+    run_dir.mkdir()
+    _write_canary_artifacts(run_dir, protocol_path)
+    monkeypatch.chdir(tmp_path)
+
+    assert verify_artifacts(run_dir)["protocol_sha256"] == _sha256(protocol_path)
+    main([
+        "finalize-canary",
+        "--canary-run", str(run_dir),
+        "--provider-wall-hours", "1.2",
+        "--spend-inr", "40",
+        "--output", str(tmp_path / "decision.json"),
+    ])
+    assert (tmp_path / "decision.json").exists()
+
 
 def test_smoke_run_writes_recoverable_artifacts(tmp_path: Path):
     summary = run_smoke(tmp_path, arm="head_momentum")
@@ -170,7 +190,7 @@ def test_token_batches_preserve_row_order_and_partial_final_batch():
 
 
 def test_llama_config_is_built_only_from_frozen_protocol():
-    protocol = json.loads((Path(__file__).parents[1] / "protocol.json").read_text())
+    protocol = json.loads(PROTOCOL_PATH.read_text())
     config = build_llama_config(protocol)
 
     assert config.hidden_size == 512
@@ -243,7 +263,7 @@ def test_evaluation_uses_token_weighted_negative_log_likelihood():
 
 
 def test_canary_timing_window_uses_exact_post_warmup_samples():
-    protocol = json.loads((Path(__file__).parents[1] / "protocol.json").read_text())
+    protocol = json.loads(PROTOCOL_PATH.read_text())
     selected = canary_timing_samples(list(range(protocol["canary"]["updates"])), protocol)
 
     assert selected == list(range(1_100, 1_200))
@@ -295,7 +315,7 @@ def test_build_run_summary_records_frozen_assay_evidence():
 
 
 def test_artifact_manifest_detects_corruption(tmp_path: Path):
-    protocol_path = Path(__file__).parents[1] / "protocol.json"
+    protocol_path = PROTOCOL_PATH
     _write_canary_artifacts(tmp_path, protocol_path)
 
     assert verify_artifacts(tmp_path)["status"] == "complete"
@@ -305,7 +325,7 @@ def test_artifact_manifest_detects_corruption(tmp_path: Path):
 
 
 def test_artifact_verifier_rejects_malformed_model_state(tmp_path: Path):
-    protocol_path = Path(__file__).parents[1] / "protocol.json"
+    protocol_path = PROTOCOL_PATH
     summary = _write_canary_artifacts(tmp_path, protocol_path)
     torch.save({"weight": torch.ones(1)}, tmp_path / "initial_state.pt")
     finalize_manifest(
@@ -326,7 +346,7 @@ def test_artifact_verifier_rejects_malformed_model_state(tmp_path: Path):
 
 
 def test_artifact_verifier_rejects_incomplete_inventory(tmp_path: Path):
-    protocol_path = Path(__file__).parents[1] / "protocol.json"
+    protocol_path = PROTOCOL_PATH
     _write_canary_artifacts(tmp_path, protocol_path)
     manifest = json.loads((tmp_path / "manifest.json").read_text())
     manifest["artifacts"].pop("summary.json")
@@ -337,7 +357,7 @@ def test_artifact_verifier_rejects_incomplete_inventory(tmp_path: Path):
 
 
 def test_artifact_verifier_rejects_summary_evaluation_mismatch(tmp_path: Path):
-    protocol_path = Path(__file__).parents[1] / "protocol.json"
+    protocol_path = PROTOCOL_PATH
     summary = _write_canary_artifacts(tmp_path, protocol_path)
     summary["eval_perplexities"] = [41.0]
     (tmp_path / "summary.json").write_text(json.dumps(summary))
@@ -359,7 +379,7 @@ def test_artifact_verifier_rejects_summary_evaluation_mismatch(tmp_path: Path):
 
 
 def test_canary_artifact_requires_evaluation_at_final_canary_update(tmp_path: Path):
-    protocol_path = Path(__file__).parents[1] / "protocol.json"
+    protocol_path = PROTOCOL_PATH
     summary = _write_canary_artifacts(tmp_path, protocol_path)
     summary["eval_updates"] = [1]
     (tmp_path / "summary.json").write_text(json.dumps(summary))
@@ -384,7 +404,7 @@ def test_canary_artifact_requires_evaluation_at_final_canary_update(tmp_path: Pa
 
 
 def test_artifact_verifier_recomputes_canary_checkpoint(tmp_path: Path):
-    protocol_path = Path(__file__).parents[1] / "protocol.json"
+    protocol_path = PROTOCOL_PATH
     summary = _write_canary_artifacts(tmp_path, protocol_path)
     summary["checkpoint_estimate"]["median_update_seconds"] = 1.0
     (tmp_path / "summary.json").write_text(json.dumps(summary))
@@ -418,7 +438,7 @@ def test_artifact_verifier_recomputes_canary_checkpoint(tmp_path: Path):
     ],
 )
 def test_artifact_verifier_rejects_invalid_metric_evidence(tmp_path: Path, mutation):
-    protocol_path = Path(__file__).parents[1] / "protocol.json"
+    protocol_path = PROTOCOL_PATH
     summary = _write_canary_artifacts(tmp_path, protocol_path)
     metrics_path = tmp_path / "metrics.jsonl"
     rows = [json.loads(line) for line in metrics_path.read_text().splitlines()]
@@ -442,7 +462,7 @@ def test_artifact_verifier_rejects_invalid_metric_evidence(tmp_path: Path, mutat
 
 
 def test_artifact_verifier_rejects_incomplete_production_status(tmp_path: Path):
-    protocol_path = Path(__file__).parents[1] / "protocol.json"
+    protocol_path = PROTOCOL_PATH
     summary = _write_canary_artifacts(tmp_path, protocol_path)
     summary["status"] = "failed"
     (tmp_path / "summary.json").write_text(json.dumps(summary))
@@ -465,7 +485,7 @@ def test_artifact_verifier_rejects_incomplete_production_status(tmp_path: Path):
 
 @pytest.mark.parametrize("mode", [None, "mystery"])
 def test_artifact_verifier_rejects_absent_or_unknown_mode(tmp_path: Path, mode):
-    protocol_path = Path(__file__).parents[1] / "protocol.json"
+    protocol_path = PROTOCOL_PATH
     summary = _write_canary_artifacts(tmp_path, protocol_path)
     if mode is None:
         summary.pop("mode")
@@ -488,7 +508,7 @@ def test_artifact_verifier_rejects_absent_or_unknown_mode(tmp_path: Path, mode):
 
 
 def test_finalize_canary_cli_records_supervised_session_gate(tmp_path: Path):
-    protocol_path = Path(__file__).parents[1] / "protocol.json"
+    protocol_path = PROTOCOL_PATH
     run_dir = tmp_path / "canary"
     run_dir.mkdir()
     summary = _write_canary_artifacts(run_dir, protocol_path)
@@ -519,7 +539,7 @@ def test_finalize_canary_cli_records_supervised_session_gate(tmp_path: Path):
 
 @pytest.mark.parametrize("mutation", ["nonhex", "copied-field", "canary-artifact"])
 def test_full_canary_evidence_is_bound_to_verified_canary_artifacts(tmp_path: Path, mutation: str):
-    protocol_path = Path(__file__).parents[1] / "protocol.json"
+    protocol_path = PROTOCOL_PATH
     run_dir = tmp_path / "canary"
     run_dir.mkdir()
     summary = _write_canary_artifacts(run_dir, protocol_path)
@@ -573,7 +593,7 @@ def test_full_canary_evidence_is_bound_to_verified_canary_artifacts(tmp_path: Pa
     [(0.0, 40.0), (1.2, -1.0), (float("nan"), 40.0), (1.2, float("nan"))],
 )
 def test_finalize_canary_rejects_invalid_session_cost(tmp_path: Path, wall: float, spend: float):
-    protocol_path = Path(__file__).parents[1] / "protocol.json"
+    protocol_path = PROTOCOL_PATH
     run_dir = tmp_path / "canary"
     run_dir.mkdir()
     _write_canary_artifacts(run_dir, protocol_path)
@@ -607,7 +627,7 @@ def test_finalize_canary_never_overwrites_existing_decision(tmp_path: Path):
                 "--canary-run",
                 str(tmp_path / "missing"),
                 "--protocol",
-                str(Path(__file__).parents[1] / "protocol.json"),
+                str(PROTOCOL_PATH),
                 "--provider-wall-hours",
                 "1.2",
                 "--spend-inr",
@@ -635,7 +655,7 @@ def test_full_train_requires_canary_decision_before_gpu_or_output(monkeypatch, t
                 "--arm",
                 "no_momentum",
                 "--protocol",
-                str(Path(__file__).parents[1] / "protocol.json"),
+                str(PROTOCOL_PATH),
                 "--initial-state",
                 str(initial_state),
                 "--output",
@@ -647,7 +667,7 @@ def test_full_train_requires_canary_decision_before_gpu_or_output(monkeypatch, t
 
 
 def test_direct_full_train_verifies_complete_canary_bundle_before_cuda(monkeypatch, tmp_path: Path):
-    protocol_path = Path(__file__).parents[1] / "protocol.json"
+    protocol_path = PROTOCOL_PATH
     run_dir = tmp_path / "canary"
     run_dir.mkdir()
     summary = _write_canary_artifacts(run_dir, protocol_path)
@@ -698,7 +718,7 @@ def test_train_cli_never_contaminates_an_existing_output(tmp_path: Path):
                 "--arm",
                 "head_momentum",
                 "--protocol",
-                str(Path(__file__).parents[1] / "protocol.json"),
+                str(PROTOCOL_PATH),
                 "--output",
                 str(output),
             ]

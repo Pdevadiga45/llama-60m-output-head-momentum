@@ -8,7 +8,7 @@ Can a small amount of targeted optimizer state improve language-model training? 
 
 - Built a PyTorch optimizer for a 58M-parameter LLaMA model. Matrix gradients use RMS normalization (dimension 1 for linear weights, dimension 0 for token embeddings); one-dimensional parameters use the same Adam-style moments in both runs. The only experimental change is a first-order momentum coefficient of `0.9` on the output head versus `0`.
 - Trained each arm from scratch on C4 for **11,000 updates**, with context length **256**, global batch **512**, BF16 precision, and **1.44B nominal tokens per arm**. Both arms shared initialization, dataset order, tokenizer, schedule, and evaluation stream.
-- Recorded token-stream digests, intermediate losses, checkpoints, and SHA-256 manifests. A 1,200-update canary checked the full GPU path before the paired A30 runs. The frozen recipes are in `protocol.json` and `extension_protocol.json`; the implementation and tests are in `scale_repro/` and `tests/`.
+- Recorded token-stream digests, intermediate losses, checkpoints, and SHA-256 manifests. A 1,200-update canary checked the full GPU path before the paired A30 runs. The frozen recipes live once in `scale_repro/protocol.json` and `scale_repro/extension_protocol.json`; the implementation and tests are in `scale_repro/` and `tests/`.
 
 ## Results
 

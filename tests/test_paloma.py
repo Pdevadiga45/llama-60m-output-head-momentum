@@ -27,6 +27,13 @@ from scale_repro.paloma import (
 
 
 ROOT = Path(__file__).resolve().parents[1]
+EXTENSION_PROTOCOL_PATH = ROOT / "scale_repro" / "extension_protocol.json"
+
+
+def test_frozen_protocols_have_one_packaged_source():
+    for name in ("protocol.json", "extension_protocol.json"):
+        assert (ROOT / "scale_repro" / name).is_file()
+        assert not (ROOT / name).exists()
 
 
 def _pinned_lm_eval_windows(token_ids: list[int], *, prefix_token: int, max_seq_len: int):
@@ -93,7 +100,7 @@ def _fake_result(protocol: dict, arm: str, sum_logprob: float) -> dict:
 
 
 def test_extension_protocol_is_frozen_to_paloma_b_only():
-    protocol = load_extension_protocol(ROOT / "extension_protocol.json")
+    protocol = load_extension_protocol(EXTENSION_PROTOCOL_PATH)
 
     assert set(protocol) == {"schema_version", "frozen_at", "base", "paloma"}
     assert protocol["frozen_at"] == "2026-09-24"
@@ -125,7 +132,7 @@ def test_extension_protocol_is_frozen_to_paloma_b_only():
 
 
 def test_data_manifest_binds_exact_revision_inventory_and_local_files():
-    protocol = load_extension_protocol(ROOT / "extension_protocol.json")
+    protocol = load_extension_protocol(EXTENSION_PROTOCOL_PATH)
     manifest = json.loads((ROOT / "artifacts/extensions/paloma_data_manifest.json").read_text())
 
     assert len(validate_data_manifest(manifest, protocol, ROOT / "data/paloma")) == 64
@@ -263,7 +270,7 @@ def test_domain_evaluation_streams_complete_gzip_file(tmp_path: Path):
 
 
 def test_checkpoint_validation_binds_frozen_state_and_summary_hashes(tmp_path: Path):
-    protocol = load_extension_protocol(ROOT / "extension_protocol.json")
+    protocol = load_extension_protocol(EXTENSION_PROTOCOL_PATH)
     state = ROOT / "artifacts/no_momentum/final_state.pt"
 
     evidence = validate_checkpoint(state, "no_momentum", protocol)
@@ -279,7 +286,7 @@ def test_checkpoint_validation_binds_frozen_state_and_summary_hashes(tmp_path: P
 
 
 def test_pair_summary_reports_descriptive_cross_domain_fit_only():
-    protocol = load_extension_protocol(ROOT / "extension_protocol.json")
+    protocol = load_extension_protocol(EXTENSION_PROTOCOL_PATH)
     plain = []
     headed = []
     for domain in protocol["paloma"]["domains"]:
@@ -304,7 +311,7 @@ def test_pair_summary_reports_descriptive_cross_domain_fit_only():
 
 
 def test_bundle_has_exact_inventory_recomputed_comparison_and_hash_manifest(tmp_path: Path):
-    protocol = load_extension_protocol(ROOT / "extension_protocol.json")
+    protocol = load_extension_protocol(EXTENSION_PROTOCOL_PATH)
     data_manifest = json.loads((ROOT / "artifacts/extensions/paloma_data_manifest.json").read_text())
     output = tmp_path / "bundle"
 
@@ -346,7 +353,7 @@ def test_bundle_has_exact_inventory_recomputed_comparison_and_hash_manifest(tmp_
 
 
 def test_bundle_rejects_extra_raw_result_fields(tmp_path: Path):
-    protocol = load_extension_protocol(ROOT / "extension_protocol.json")
+    protocol = load_extension_protocol(EXTENSION_PROTOCOL_PATH)
     data_manifest = json.loads((ROOT / "artifacts/extensions/paloma_data_manifest.json").read_text())
     no_momentum = _fake_result(protocol, "no_momentum", -400.0)
     no_momentum["unexpected"] = True
@@ -363,7 +370,7 @@ def test_bundle_rejects_extra_raw_result_fields(tmp_path: Path):
 
 @pytest.mark.parametrize("arm", ["no_momentum", "head_momentum"])
 def test_write_bundle_rejects_extra_domain_result_fields(tmp_path: Path, arm: str):
-    protocol = load_extension_protocol(ROOT / "extension_protocol.json")
+    protocol = load_extension_protocol(EXTENSION_PROTOCOL_PATH)
     data_manifest = json.loads((ROOT / "artifacts/extensions/paloma_data_manifest.json").read_text())
     results = {
         "no_momentum": _fake_result(protocol, "no_momentum", -400.0),
@@ -383,7 +390,7 @@ def test_write_bundle_rejects_extra_domain_result_fields(tmp_path: Path, arm: st
 
 @pytest.mark.parametrize("arm", ["no_momentum", "head_momentum"])
 def test_verify_bundle_rejects_extra_domain_result_fields(tmp_path: Path, arm: str):
-    protocol = load_extension_protocol(ROOT / "extension_protocol.json")
+    protocol = load_extension_protocol(EXTENSION_PROTOCOL_PATH)
     data_manifest = json.loads((ROOT / "artifacts/extensions/paloma_data_manifest.json").read_text())
     output = tmp_path / "bundle"
     write_bundle(
@@ -410,7 +417,7 @@ def test_verify_bundle_rejects_extra_domain_result_fields(tmp_path: Path, arm: s
 
 
 def test_compare_rejects_forged_protocol_dict():
-    protocol = load_extension_protocol(ROOT / "extension_protocol.json")
+    protocol = load_extension_protocol(EXTENSION_PROTOCOL_PATH)
     forged = {**protocol, "forged": True}
 
     with pytest.raises(ValueError, match="frozen Paloma protocol"):
@@ -422,7 +429,7 @@ def test_compare_rejects_forged_protocol_dict():
 
 
 def test_write_bundle_rejects_forged_protocol_dict(tmp_path: Path):
-    protocol = load_extension_protocol(ROOT / "extension_protocol.json")
+    protocol = load_extension_protocol(EXTENSION_PROTOCOL_PATH)
     forged = {**protocol, "forged": True}
     data_manifest = json.loads((ROOT / "artifacts/extensions/paloma_data_manifest.json").read_text())
 
@@ -437,7 +444,7 @@ def test_write_bundle_rejects_forged_protocol_dict(tmp_path: Path):
 
 
 def test_verify_bundle_rejects_forged_protocol_dict(tmp_path: Path):
-    protocol = load_extension_protocol(ROOT / "extension_protocol.json")
+    protocol = load_extension_protocol(EXTENSION_PROTOCOL_PATH)
     data_manifest = json.loads((ROOT / "artifacts/extensions/paloma_data_manifest.json").read_text())
     output = tmp_path / "bundle"
     write_bundle(
@@ -453,7 +460,7 @@ def test_verify_bundle_rejects_forged_protocol_dict(tmp_path: Path):
 
 
 def test_verifier_rejects_internally_consistent_forged_code_hash(tmp_path: Path):
-    protocol = load_extension_protocol(ROOT / "extension_protocol.json")
+    protocol = load_extension_protocol(EXTENSION_PROTOCOL_PATH)
     data_manifest = json.loads((ROOT / "artifacts/extensions/paloma_data_manifest.json").read_text())
     output = tmp_path / "bundle"
     write_bundle(
@@ -486,7 +493,7 @@ def test_verifier_rejects_internally_consistent_forged_code_hash(tmp_path: Path)
 
 
 def test_verifier_rejects_extra_manifest_fields(tmp_path: Path):
-    protocol = load_extension_protocol(ROOT / "extension_protocol.json")
+    protocol = load_extension_protocol(EXTENSION_PROTOCOL_PATH)
     data_manifest = json.loads((ROOT / "artifacts/extensions/paloma_data_manifest.json").read_text())
     output = tmp_path / "bundle"
     write_bundle(
@@ -506,7 +513,7 @@ def test_verifier_rejects_extra_manifest_fields(tmp_path: Path):
 
 
 def test_pair_cli_evaluates_both_frozen_arms_in_one_command(tmp_path: Path, monkeypatch):
-    protocol = load_extension_protocol(ROOT / "extension_protocol.json")
+    protocol = load_extension_protocol(EXTENSION_PROTOCOL_PATH)
     calls = []
 
     def fake_evaluate(*, arm, **kwargs):
@@ -520,7 +527,7 @@ def test_pair_cli_evaluates_both_frozen_arms_in_one_command(tmp_path: Path, monk
         "--head-momentum-checkpoint", str(ROOT / "artifacts/head_momentum/final_state.pt"),
         "--data-root", str(ROOT / "data/paloma"),
         "--data-manifest", str(ROOT / "artifacts/extensions/paloma_data_manifest.json"),
-        "--protocol", str(ROOT / "extension_protocol.json"),
+        "--protocol", str(EXTENSION_PROTOCOL_PATH),
         "--output", str(output),
     ])
 

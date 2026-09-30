@@ -20,7 +20,7 @@ from scale_repro.core import (
 )
 
 
-ROOT = Path(__file__).parents[1]
+ROOT = Path(__file__).parents[1] / "scale_repro"
 
 
 def test_frozen_protocol_is_internally_consistent():

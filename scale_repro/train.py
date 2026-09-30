@@ -25,6 +25,8 @@ from .core import (
     partition_scale_parameters,
 )
 
+_DEFAULT_PROTOCOL = Path(__file__).with_name("protocol.json")
+
 
 def _write_json(path: Path, value: dict) -> None:
     path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n")
@@ -95,7 +97,7 @@ def verify_artifacts(output: str | Path, *, protocol_path: str | Path | None = N
             raise ValueError(f"manifest metadata differs from summary: {field}")
     if re.fullmatch(r"[0-9a-f]{40}", summary["commit_sha"]) is None:
         raise ValueError("production artifact commit_sha is invalid")
-    selected_protocol = Path(protocol_path) if protocol_path is not None else Path(__file__).parents[1] / "protocol.json"
+    selected_protocol = Path(protocol_path) if protocol_path is not None else _DEFAULT_PROTOCOL
     protocol = load_protocol(selected_protocol)
     if summary["protocol_sha256"] != _sha256(selected_protocol):
         raise ValueError("production artifact protocol_sha256 differs from the selected protocol")
@@ -828,7 +830,7 @@ def main(argv: list[str] | None = None) -> None:
     train = subparsers.add_parser("train")
     train.add_argument("--arm", choices=["no_momentum", "head_momentum"], required=True)
     train.add_argument("--mode", choices=["canary", "full"], required=True)
-    train.add_argument("--protocol", type=Path, default=Path("protocol.json"))
+    train.add_argument("--protocol", type=Path, default=_DEFAULT_PROTOCOL)
     train.add_argument("--initial-state", type=Path)
     train.add_argument("--canary-decision", type=Path)
     train.add_argument("--canary-run", type=Path)
@@ -836,7 +838,7 @@ def main(argv: list[str] | None = None) -> None:
 
     finalize = subparsers.add_parser("finalize-canary")
     finalize.add_argument("--canary-run", type=Path, required=True)
-    finalize.add_argument("--protocol", type=Path, default=Path("protocol.json"))
+    finalize.add_argument("--protocol", type=Path, default=_DEFAULT_PROTOCOL)
     finalize.add_argument("--provider-wall-hours", type=float, required=True)
     finalize.add_argument("--spend-inr", type=float, required=True)
     finalize.add_argument("--output", type=Path, required=True)
@@ -844,7 +846,7 @@ def main(argv: list[str] | None = None) -> None:
     compare = subparsers.add_parser("compare")
     compare.add_argument("--no-momentum", type=Path, required=True)
     compare.add_argument("--head-momentum", type=Path, required=True)
-    compare.add_argument("--protocol", type=Path, default=Path("protocol.json"))
+    compare.add_argument("--protocol", type=Path, default=_DEFAULT_PROTOCOL)
     compare.add_argument("--output", type=Path, required=True)
 
     args = parser.parse_args(argv)
